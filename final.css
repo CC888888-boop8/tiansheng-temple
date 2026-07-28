@@ -1,0 +1,122 @@
+/* v61: this file intentionally loads after every historical style override. */
+.result-grid > article {
+  overflow: hidden !important;
+}
+
+.result-grid > article > .donation-preview,
+.result-grid > article:nth-child(2) > .donation-preview {
+  box-sizing: border-box !important;
+  display: block !important;
+  width: 100% !important;
+  height: auto !important;
+  min-width: 100% !important;
+  min-height: 0 !important;
+  max-width: 100% !important;
+  max-height: none !important;
+  margin: 0 !important;
+  aspect-ratio: 4 / 5 !important;
+  object-fit: cover !important;
+  background: transparent !important;
+  border: 0 !important;
+  transform: none !important;
+}
+
+.result-grid > article:nth-child(1) > .donation-preview {
+  object-position: center 74% !important;
+}
+
+.result-grid > article:nth-child(2) > .donation-preview {
+  object-position: center 50% !important;
+}
+
+.result-grid > article:nth-child(3) > .donation-preview {
+  object-position: center 32% !important;
+}
+
+.result-grid > article:nth-child(4) > .donation-preview {
+  object-position: center 28% !important;
+}
+
+@media (max-width: 1180px) {
+  .hero-temple-base,
+  .hero-deity-photo {
+    right: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    margin-right: 0 !important;
+    margin-left: 0 !important;
+  }
+
+  .hero-deity-photo {
+    background-size: cover !important;
+    -webkit-mask-image: linear-gradient(
+      180deg,
+      #000 0%,
+      #000 72%,
+      rgba(0, 0, 0, 0.66) 86%,
+      transparent 100%
+    ) !important;
+    mask-image: linear-gradient(
+      180deg,
+      #000 0%,
+      #000 72%,
+      rgba(0, 0, 0, 0.66) 86%,
+      transparent 100%
+    ) !important;
+  }
+}
+
+/* Pages CMS image variables preserve the original layered hero artwork. */
+.hero-deity-photo {
+  background-image: var(--cms-hero-deity-image, url("/temple-deities-no-sign.png")) !important;
+}
+
+@media (min-width: 1181px) {
+  .hero-temple-base {
+    background-image:
+      linear-gradient(90deg, #360906f0 0%, #560e0ab8 24%, #eee1c41a 48%, #0618242e 75%, #eee1c433),
+      var(--cms-hero-temple-image, url("/hero-production.png")) !important;
+  }
+}
+
+@media (min-width: 701px) and (max-width: 1180px) {
+  .hero-temple-base {
+    background-image:
+      linear-gradient(90deg, rgba(54, 8, 6, .46), rgba(54, 8, 6, .05) 28% 72%, rgba(54, 8, 6, .46)),
+      var(--cms-hero-temple-image, url("/hero-production.png")) !important;
+  }
+}
+
+@media (max-width: 700px) {
+  .hero-temple-base {
+    background-image:
+      linear-gradient(90deg, rgba(54, 8, 6, .4), rgba(54, 8, 6, .02) 24% 76%, rgba(54, 8, 6, .4)),
+      var(--cms-hero-temple-image, url("/hero-production.png")) !important;
+  }
+}
+
+/* Restore the original swaying 歲、安 lantern animation on tablet and phone. */
+@media (max-width: 1180px) {
+  .hero-lanterns {
+    display: block !important;
+    position: absolute !important;
+    z-index: 9 !important;
+    inset: 0 !important;
+    pointer-events: none !important;
+  }
+
+  .hero-lanterns i {
+    display: grid !important;
+    animation: lanternSway 4.2s ease-in-out infinite !important;
+  }
+
+  .hero-lanterns i:last-child {
+    animation-delay: -2.1s !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-lanterns i {
+    animation: none !important;
+  }
+}
