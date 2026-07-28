@@ -120,3 +120,12 @@
     animation: none !important;
   }
 }
+/* 正式網站隱藏「網站管理」入口 */
+.admin-entry {
+  display: none !important;
+}
+
+/* 聖、安燈籠緊接在各版本導覽列下方 */
+.hero-lanterns i {
+  top: calc(var(--fixed-header) + 28px) !important;
+}
