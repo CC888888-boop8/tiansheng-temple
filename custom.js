@@ -214,12 +214,20 @@
         }), { rootMargin: "700px 0px" });
         videos.forEach((video) => observer.observe(video));
       }
-      document.addEventListener("pointerdown", (event) => {
+      document.addEventListener("pointermove", (event) => {
+        const input = event.target && event.target.closest ? event.target.closest(".video-timeline input[type='range']") : null, card = input == null ? null : input.closest(".video-card"), video = card == null ? null : card.querySelector("video");
+        if (!input || !video || !input.hasPointerCapture(event.pointerId)) return;
+        const rect = input.getBoundingClientRect(), max = Number(input.max) || video.duration || 0, target = rect.width && max ? Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width)) * max : 0;
+        input.dataset.pendingSeek = String(target), input.value = String(target);
+        (video.dataset.blobReady === "true" || video.seekable.length && video.seekable.end(video.seekable.length - 1) > 0) && (video.currentTime = target);
+        event.preventDefault();
+      }, { capture: !0, passive: !1 }), document.addEventListener("pointerdown", (event) => {
         const input = event.target && event.target.closest ? event.target.closest(".video-timeline input[type='range']") : null, card = input == null ? null : input.closest(".video-card"), video = card == null ? null : card.querySelector("video");
         if (!input || !video || video.dataset.blobReady === "true" || video.seekable.length && video.seekable.end(video.seekable.length - 1) > 0) return;
         const rect = input.getBoundingClientRect(), max = Number(input.max) || video.duration || 0, target = rect.width && max ? Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width)) * max : 0;
-        event.preventDefault(), makeSeekable(video).then(() => {
-          target > 0 && (video.currentTime = target, input.value = String(target));
+        input.setPointerCapture && input.setPointerCapture(event.pointerId), input.dataset.pendingSeek = String(target), event.preventDefault(), makeSeekable(video).then(() => {
+          const requested = Number(input.dataset.pendingSeek || target);
+          requested > 0 && (video.currentTime = requested, input.value = String(requested));
         });
       }, !0), document.addEventListener("click", (event) => {
         const button = event.target && event.target.closest ? event.target.closest(".video-buttons button[aria-label='\u5012\u9000\u5341\u79D2'],.video-buttons button[aria-label='\u5FEB\u9032\u5341\u79D2']") : null, card = button == null ? null : button.closest(".video-card"), video = card == null ? null : card.querySelector("video");
