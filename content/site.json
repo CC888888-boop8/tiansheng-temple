@@ -5,7 +5,7 @@
     "templeName": "基隆天聖宮玉院",
     "branchName": "石門五府千歲宮",
     "englishName": "TIAN SHENG GONG YU YUAN",
-    "logo": "/tiansheng-logo.png",
+    "logo": "tiansheng-logo.png",
     "phoneDisplay": "(02) 2462-2033",
     "phoneLink": "tel:+886224622033",
     "messengerUrl": "https://m.me/61583931960613",
@@ -19,8 +19,8 @@
     "intro": "以敬天愛人為本，以慈心濟世為念。承續五府千歲威靈，守護地方、安定人心，讓信仰與善念世代相傳。",
     "caption": "五府神威・浩蕩普照",
     "captionTemple": "基隆天聖宮玉院·石門五府千歲宮",
-    "deityImage": "/temple-deities-no-sign.png",
-    "templeImage": "/hero-production.png"
+    "deityImage": "temple-deities-no-sign.png",
+    "templeImage": "hero-production.png"
   },
   "portals": [
     {
@@ -47,7 +47,7 @@
     "civilName": "俗名｜謝許月鶯（聖姑）",
     "quote": "「解決別人的困難，就是我們的幸福。慈暉廣被利人天，聖德輝煌傳萬世。」",
     "description": "以一生的赤誠守護聖道，以滿心慈悲點亮迷津。宮主秉持敬天、愛人、無私的初心，承擔濟世、勸善與文化傳承之責，陪伴善信在信仰中安定身心。",
-    "image": "/temple-leader.png"
+    "image": "temple-leader.png"
   },
   "biography": {
     "english": "THE SACRED BIOGRAPHY",
@@ -129,7 +129,7 @@
     "description": "善款使用與成果照片將依宮方確認資料持續更新，讓每一份護持都有清楚可見的去向。",
     "cards": [
       {
-        "title": "麥寮橋頭鎮聖宮",
+        "title": "麥寮橋頭鎮盛宮",
         "description": "護持宮殿建設與信仰文化活動，使地方香火與傳承得以延續。",
         "preview": "/donations/maoliao-zhensheng-1.webp",
         "gallery": [
@@ -267,9 +267,7 @@
         "address": "新北市石門區老梅里七股十二之三號",
         "mapQuery": "新北市石門區老梅里七股12-3號",
         "heading1": "交通建議",
-        "description1": "建議開車前往。行前如有路況、宮務或路線疑問，歡迎先來電確認。",
-        "heading2": "",
-        "description2": ""
+        "description1": "建議開車前往。行前如有路況、宮務或路線疑問，歡迎先來電確認。"
       }
     ],
     "phoneLabel": "宮務聯絡電話",
