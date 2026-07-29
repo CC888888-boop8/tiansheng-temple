@@ -207,40 +207,60 @@
         });
         return loads.set(video, task), task;
       };
-      const videos = [...document.querySelectorAll(".video-card video")];
-      if (!((navigator.connection == null ? void 0 : navigator.connection.saveData)) && "IntersectionObserver" in window) {
-        const observer = new IntersectionObserver((entries) => entries.forEach((entry) => {
-          entry.isIntersecting && (observer.unobserve(entry.target), makeSeekable(entry.target));
-        }), { rootMargin: "700px 0px" });
-        videos.forEach((video) => observer.observe(video));
-      }
+      let activeTimeline = null, activeVideo = null, activePointerId = null;
+      const timelineFraction = (input, clientX) => {
+        const rect = input.getBoundingClientRect();
+        return rect.width > 0 ? Math.max(0, Math.min(1, (clientX - rect.left) / rect.width)) : 0;
+      };
+      const applyTimelineFraction = (input, video, fraction) => {
+        const duration = Number.isFinite(video.duration) && video.duration > 0 ? video.duration : Number(input.max) || 0;
+        input.dataset.pendingSeekFraction = String(fraction);
+        if (duration <= 0) {
+          if (video.dataset.metadataRequested !== "true") {
+            video.dataset.metadataRequested = "true", video.preload = "metadata", video.load();
+          }
+          return false;
+        }
+        const target = Math.max(0, Math.min(duration, fraction * duration));
+        input.max = String(duration), input.value = String(target), input.dataset.pendingSeek = String(target), video.currentTime = target;
+        return true;
+      };
+      const applyPendingTimeline = (input, video) => {
+        const fraction = Number(input.dataset.pendingSeekFraction);
+        Number.isFinite(fraction) && applyTimelineFraction(input, video, fraction);
+      };
       const finishTimelineDrag = (event) => {
-        const input = event.target && event.target.closest ? event.target.closest(".video-timeline input[type='range']") : null, card = input == null ? null : input.closest(".video-card"), video = card == null ? null : card.querySelector("video");
-        if (!input || !video || input.dataset.timelineDragging !== "true") return;
-        const requested = Number(input.dataset.pendingSeek || input.value || 0), applyRequestedTime = () => {
-          requested >= 0 && (video.currentTime = Math.max(0, Math.min(video.duration || requested, requested)), input.value = String(requested));
-        };
-        input.dataset.timelineDragging = "false", input.hasPointerCapture && input.hasPointerCapture(event.pointerId) && input.releasePointerCapture(event.pointerId);
-        video.dataset.blobReady === "true" || video.seekable.length && video.seekable.end(video.seekable.length - 1) > 0 ? applyRequestedTime() : makeSeekable(video).then(applyRequestedTime);
+        if (!activeTimeline || !activeVideo || activePointerId !== event.pointerId) return;
+        const input = activeTimeline, video = activeVideo, fraction = timelineFraction(input, event.clientX);
+        applyTimelineFraction(input, video, fraction);
+        input.dataset.timelineDragging = "false";
+        try {
+          input.hasPointerCapture && input.hasPointerCapture(event.pointerId) && input.releasePointerCapture(event.pointerId);
+        } catch (error) {
+        }
+        activeTimeline = null, activeVideo = null, activePointerId = null;
         event.preventDefault();
       };
       document.addEventListener("pointermove", (event) => {
-        const input = event.target && event.target.closest ? event.target.closest(".video-timeline input[type='range']") : null, card = input == null ? null : input.closest(".video-card"), video = card == null ? null : card.querySelector("video");
-        if (!input || !video || input.dataset.timelineDragging !== "true") return;
-        const rect = input.getBoundingClientRect(), max = Number(input.max) || video.duration || 0, target = rect.width && max ? Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width)) * max : 0;
-        input.dataset.pendingSeek = String(target), input.value = String(target);
-        (video.dataset.blobReady === "true" || video.seekable.length && video.seekable.end(video.seekable.length - 1) > 0) && (video.currentTime = target);
+        if (!activeTimeline || !activeVideo || activePointerId !== event.pointerId) return;
+        applyTimelineFraction(activeTimeline, activeVideo, timelineFraction(activeTimeline, event.clientX));
         event.preventDefault();
       }, { capture: !0, passive: !1 }), document.addEventListener("pointerup", finishTimelineDrag, { capture: !0, passive: !1 }), document.addEventListener("pointercancel", finishTimelineDrag, { capture: !0, passive: !1 }), document.addEventListener("pointerdown", (event) => {
         const input = event.target && event.target.closest ? event.target.closest(".video-timeline input[type='range']") : null, card = input == null ? null : input.closest(".video-card"), video = card == null ? null : card.querySelector("video");
         if (!input || !video) return;
-        const rect = input.getBoundingClientRect(), max = Number(input.max) || video.duration || 0, target = rect.width && max ? Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width)) * max : 0;
-        input.setPointerCapture && input.setPointerCapture(event.pointerId), input.dataset.timelineDragging = "true", input.dataset.pendingSeek = String(target), input.value = String(target), event.preventDefault();
-        (video.dataset.blobReady === "true" || video.seekable.length && video.seekable.end(video.seekable.length - 1) > 0 ? Promise.resolve(video) : makeSeekable(video)).then(() => {
-          const requested = Number(input.dataset.pendingSeek || target);
-          requested >= 0 && (video.currentTime = Math.max(0, Math.min(video.duration || requested, requested)), input.value = String(requested));
-        });
-      }, !0), document.addEventListener("click", (event) => {
+        activeTimeline = input, activeVideo = video, activePointerId = event.pointerId, input.dataset.timelineDragging = "true";
+        try {
+          input.setPointerCapture && input.setPointerCapture(event.pointerId);
+        } catch (error) {
+        }
+        const fraction = timelineFraction(input, event.clientX);
+        if (!applyTimelineFraction(input, video, fraction)) {
+          video.addEventListener("loadedmetadata", () => {
+            video.dataset.metadataRequested = "false", applyPendingTimeline(input, video);
+          }, { once: !0 });
+        }
+        event.preventDefault();
+      }, { capture: !0, passive: !1 }), document.addEventListener("click", (event) => {
         const button = event.target && event.target.closest ? event.target.closest(".video-buttons button[aria-label='\u5012\u9000\u5341\u79D2'],.video-buttons button[aria-label='\u5FEB\u9032\u5341\u79D2']") : null, card = button == null ? null : button.closest(".video-card"), video = card == null ? null : card.querySelector("video");
         if (!button || !video || video.dataset.blobReady === "true" || video.seekable.length && video.seekable.end(video.seekable.length - 1) > 0) return;
         const delta = button.getAttribute("aria-label") === "\u5FEB\u9032\u5341\u79D2" ? 10 : -10;
