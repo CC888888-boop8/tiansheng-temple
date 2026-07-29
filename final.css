@@ -850,3 +850,55 @@ body.preview-active {
     overscroll-behavior: contain !important;
   }
 }
+
+/* v74 — keep the controls at one physical screen position when Chrome's
+   browser bars disappear. The 41px dock anchor stays fixed; its contents are
+   taken out of normal flow and open upward. */
+@media (max-width: 700px) {
+  .quick-home-dock {
+    top: calc(
+      var(--quick-stable-height, 100svh) -
+      50px +
+      var(--quick-chrome-vertical-lift, 0px)
+    ) !important;
+    bottom: auto !important;
+  }
+
+  .quick-dock {
+    top: calc(
+      var(--quick-stable-height, 100svh) -
+      103px +
+      var(--quick-chrome-vertical-lift, 0px)
+    ) !important;
+    bottom: auto !important;
+    width: 126px !important;
+    height: 41px !important;
+    min-height: 41px !important;
+    max-height: 41px !important;
+    overflow: visible !important;
+  }
+
+  .quick-dock:not(.collapsed) .quick-contact-group {
+    position: absolute !important;
+    top: auto !important;
+    right: 0 !important;
+    bottom: calc(100% + 8px) !important;
+    width: 140px !important;
+    max-height: calc(var(--quick-visible-height, 100svh) - 142px) !important;
+  }
+
+  .quick-collapse,
+  .quick-dock:not(.collapsed) .quick-collapse {
+    position: absolute !important;
+    inset: 0 !important;
+    width: 126px !important;
+    height: 41px !important;
+    margin: 0 !important;
+  }
+
+  .quick-route-menu {
+    top: auto !important;
+    right: 0 !important;
+    bottom: calc(100% + 184px) !important;
+  }
+}

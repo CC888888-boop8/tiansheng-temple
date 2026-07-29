@@ -137,12 +137,10 @@
         } else {
           stableHeight = stableHeight > 0 ? Math.min(stableHeight, visibleHeight) : visibleHeight;
         }
-        const layoutHeight = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
-        const visibleBottom = viewport ? viewport.offsetTop + viewport.height : window.innerHeight;
-        const coveredBottom = Math.max(0, layoutHeight - visibleBottom);
         const collapsedChromeLift = Math.max(0, visibleHeight - stableHeight);
         const root = document.documentElement;
-        root.style.setProperty("--quick-chrome-bottom-shift", `${Math.round(coveredBottom + collapsedChromeLift)}px`);
+        root.style.setProperty("--quick-stable-height", `${Math.round(stableHeight)}px`);
+        root.style.setProperty("--quick-chrome-vertical-lift", `${Math.round(collapsedChromeLift)}px`);
         root.style.setProperty("--quick-visible-height", `${Math.round(visibleHeight)}px`);
       };
       const queueSync = () => {
