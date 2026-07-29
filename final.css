@@ -187,19 +187,84 @@
   touch-action: none !important;
 }
 
-/* Keep portal motion visible while constraining only the inline width. */
-@media (max-width: 1180px) {
-  .culture-portals {
-    overflow: visible !important;
-    contain: inline-size !important;
+/* Soften the home image into the wine-red artwork without changing its crop. */
+@media (min-width: 1181px) {
+  .hero::before {
+    content: "" !important;
+    display: block !important;
+    position: absolute !important;
+    z-index: 2 !important;
+    pointer-events: none !important;
+    inset: 108px 0 0 !important;
+    background:
+      linear-gradient(
+        90deg,
+        rgba(48, 7, 5, 0.96) 0%,
+        rgba(53, 8, 6, 0.88) 18%,
+        rgba(58, 9, 7, 0.66) 30%,
+        rgba(55, 8, 6, 0.34) 42%,
+        rgba(45, 7, 5, 0.12) 53%,
+        transparent 64%
+      ),
+      linear-gradient(
+        180deg,
+        transparent 57%,
+        rgba(42, 6, 4, 0.08) 70%,
+        rgba(42, 6, 4, 0.4) 100%
+      ) !important;
+  }
+
+  .hero-deity-photo {
+    -webkit-mask-image: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(0, 0, 0, 0.12) 7%,
+      rgba(0, 0, 0, 0.48) 19%,
+      #000 35%,
+      #000 92%,
+      transparent 100%
+    ) !important;
+    mask-image: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(0, 0, 0, 0.12) 7%,
+      rgba(0, 0, 0, 0.48) 19%,
+      #000 35%,
+      #000 92%,
+      transparent 100%
+    ) !important;
   }
 }
 
-/* Almanac reflows whenever Android/iOS browser chrome changes the viewport. */
+@media (max-width: 1180px) {
+  .hero::before {
+    content: "" !important;
+    display: block !important;
+    position: absolute !important;
+    z-index: 2 !important;
+    pointer-events: none !important;
+    inset: var(--fixed-header) 0 auto !important;
+    height: clamp(414px, 54vw, 520px) !important;
+    background:
+      linear-gradient(
+        180deg,
+        transparent 0%,
+        transparent 52%,
+        rgba(55, 8, 6, 0.08) 62%,
+        rgba(55, 8, 6, 0.28) 73%,
+        rgba(55, 8, 6, 0.62) 84%,
+        rgba(55, 8, 6, 0.88) 94%,
+        #370806 100%
+      ) !important;
+  }
+}
+
+/* v67: one predictable almanac grid; no historical grid-area overrides. */
 .ritual-console,
 .ritual-tabs,
 .ritual-panel,
-.almanac-panel {
+.almanac-panel,
+.almanac-panel > * {
   box-sizing: border-box !important;
   min-width: 0 !important;
   max-width: 100% !important;
@@ -207,27 +272,80 @@
 
 .ritual-console {
   width: 100% !important;
-  overflow-x: clip !important;
+  height: auto !important;
+  overflow: hidden !important;
 }
 
 .ritual-tabs,
 .ritual-panel {
-  width: min(920px, calc(100% - 32px)) !important;
+  inset: auto !important;
   margin-right: auto !important;
   margin-left: auto !important;
   transform: none !important;
 }
 
-.almanac-panel > * {
+.ritual-tabs {
+  width: min(720px, calc(100% - 32px)) !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+}
+
+.ritual-tabs button {
   min-width: 0 !important;
+}
+
+.ritual-panel {
+  width: min(1240px, calc(100% - 32px)) !important;
+  height: auto !important;
+}
+
+.almanac-panel {
+  display: grid !important;
+  grid-template-areas: none !important;
+  align-items: center !important;
+}
+
+.almanac-panel > * {
+  grid-area: auto !important;
+  margin: 0 !important;
+  transform: none !important;
+}
+
+.almanac-date p,
+.almanac-advice p,
+.almanac-note {
   max-width: 100% !important;
+  overflow-wrap: anywhere !important;
+}
+
+@media (min-width: 901px) {
+  .almanac-panel {
+    grid-template-columns: 110px minmax(220px, 0.9fr) minmax(0, 1fr) minmax(0, 1fr) !important;
+    gap: clamp(18px, 2.5vw, 38px) !important;
+    padding: 42px 34px 36px !important;
+  }
+
+  .almanac-seal,
+  .almanac-date,
+  .almanac-advice {
+    grid-column: auto !important;
+    grid-row: auto !important;
+  }
+
+  .almanac-note {
+    grid-column: 2 / -1 !important;
+    width: 100% !important;
+  }
 }
 
 @media (min-width: 701px) and (max-width: 900px) {
+  .ritual-panel {
+    width: calc(100% - 32px) !important;
+  }
+
   .almanac-panel {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
-    gap: 20px !important;
-    padding: 32px 26px !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 18px !important;
+    padding: 30px 24px !important;
   }
 
   .almanac-seal {
@@ -237,6 +355,7 @@
   .almanac-date,
   .almanac-note {
     grid-column: 1 / -1 !important;
+    width: 100% !important;
   }
 
   .almanac-advice {
@@ -247,14 +366,17 @@
 @media (max-width: 700px) {
   .ritual-tabs,
   .ritual-panel {
-    width: calc(100% - 24px) !important;
+    width: calc(100% - 20px) !important;
   }
 
   .almanac-panel {
-    display: grid !important;
     grid-template-columns: minmax(0, 1fr) !important;
     gap: 15px !important;
-    padding: 26px 16px 24px !important;
+    padding: 26px 14px 24px !important;
+  }
+
+  .almanac-seal {
+    display: none !important;
   }
 
   .almanac-date,
@@ -263,4 +385,59 @@
     grid-column: 1 !important;
     width: 100% !important;
   }
+}
+
+/* Keep the animated 壹貳參 cards fully visible, but inside a wider paper field. */
+@media (max-width: 1180px) {
+  .culture-portals {
+    box-sizing: border-box !important;
+    contain: none !important;
+    overflow: visible !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    padding-top: 72px !important;
+    padding-right: max(24px, env(safe-area-inset-right)) !important;
+    padding-bottom: 84px !important;
+    padding-left: max(24px, env(safe-area-inset-left)) !important;
+  }
+
+  .culture-portals > a {
+    box-sizing: border-box !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    margin-right: 0 !important;
+    margin-left: 0 !important;
+  }
+}
+
+/* Android Chrome: the range owns horizontal dragging, not page scrolling. */
+.video-timeline {
+  position: relative !important;
+  z-index: 30 !important;
+  min-width: 0 !important;
+  overflow: visible !important;
+}
+
+.video-timeline input[type="range"] {
+  display: block !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  height: 48px !important;
+  pointer-events: auto !important;
+  touch-action: pan-y !important;
+  -webkit-user-select: none !important;
+  user-select: none !important;
+  -webkit-appearance: auto !important;
+  appearance: auto !important;
+}
+
+/* Remove the distracting inner gold outlines; keep the outer card borders. */
+.location-card::before,
+.social-frame::before {
+  content: none !important;
+  display: none !important;
+  border: 0 !important;
 }
