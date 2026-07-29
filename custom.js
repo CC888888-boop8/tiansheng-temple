@@ -121,6 +121,39 @@
         card.insertBefore(frame, image);
         frame.append(image);
       });
+    }, installMobileQuickViewport = () => {
+      if (document.documentElement.dataset.mobileQuickViewport === "ready") return;
+      document.documentElement.dataset.mobileQuickViewport = "ready";
+      let stableHeight = 0, orientation = "", frame = 0;
+      const sync = () => {
+        frame = 0;
+        const viewport = window.visualViewport;
+        const visibleHeight = viewport ? viewport.height : window.innerHeight;
+        const visibleWidth = viewport ? viewport.width : window.innerWidth;
+        const nextOrientation = visibleWidth > visibleHeight ? "landscape" : "portrait";
+        if (nextOrientation !== orientation) {
+          orientation = nextOrientation;
+          stableHeight = visibleHeight;
+        } else {
+          stableHeight = stableHeight > 0 ? Math.min(stableHeight, visibleHeight) : visibleHeight;
+        }
+        const layoutHeight = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
+        const visibleBottom = viewport ? viewport.offsetTop + viewport.height : window.innerHeight;
+        const coveredBottom = Math.max(0, layoutHeight - visibleBottom);
+        const collapsedChromeLift = Math.max(0, visibleHeight - stableHeight);
+        const root = document.documentElement;
+        root.style.setProperty("--quick-chrome-bottom-shift", `${Math.round(coveredBottom + collapsedChromeLift)}px`);
+        root.style.setProperty("--quick-visible-height", `${Math.round(visibleHeight)}px`);
+      };
+      const queueSync = () => {
+        frame || (frame = window.requestAnimationFrame(sync));
+      };
+      sync();
+      window.addEventListener("resize", queueSync, { passive: !0 });
+      window.addEventListener("orientationchange", () => {
+        stableHeight = 0, orientation = "", queueSync();
+      }, { passive: !0 });
+      window.visualViewport && (window.visualViewport.addEventListener("resize", queueSync, { passive: !0 }), window.visualViewport.addEventListener("scroll", queueSync, { passive: !0 }));
     }, correctTempleNames = () => {
       const names = new Map([
         ["\u9EA5\u5BEE\u65BD\u539D\u93AE\u8056\u5BAE", "\u9EA5\u5BEE\u6A4B\u982D\u93AE\u8056\u5BAE"],
@@ -549,7 +582,7 @@
       } catch (e) {
       }
     }, ensureUi = () => {
-      installNavigation(), installHashNavigation(), installQuickDock(), installPhoneDialing(), installPortalMotion(), installFortuneFeedback(), installReliableVideoControls(), installSinglePageEbook(), ensureDonationPreviewFrames(), correctTempleNames(), correctShimenGallery(), annotateDynamicContent(), normalizeEbook();
+      installNavigation(), installHashNavigation(), installQuickDock(), installMobileQuickViewport(), installPhoneDialing(), installPortalMotion(), installFortuneFeedback(), installReliableVideoControls(), installSinglePageEbook(), ensureDonationPreviewFrames(), correctTempleNames(), correctShimenGallery(), annotateDynamicContent(), normalizeEbook();
     }, boot = () => {
       if (ensureUi(), applyDraft(), !document.querySelector(".admin-entry")) {
         const admin = document.createElement("a");

@@ -794,3 +794,59 @@ body.preview-active {
     transform: none !important;
   }
 }
+
+/* v73 — Mobile Chrome quick controls.
+   Both controls use the same visual-viewport lift. The dock is anchored by
+   its bottom edge, so expanding it always grows upward and never below the
+   screen when Chrome hides or restores its browser bars. */
+@media (max-width: 700px) {
+  .quick-dock,
+  .quick-home-dock {
+    position: fixed !important;
+    top: auto !important;
+    right: 8px !important;
+    left: auto !important;
+    transform: none !important;
+  }
+
+  .quick-home-dock {
+    bottom: calc(
+      var(--quick-chrome-bottom-shift, 0px) +
+      max(9px, env(safe-area-inset-bottom))
+    ) !important;
+  }
+
+  .quick-dock {
+    bottom: calc(
+      var(--quick-chrome-bottom-shift, 0px) +
+      max(9px, env(safe-area-inset-bottom)) +
+      53px
+    ) !important;
+    height: auto !important;
+    max-height: calc(var(--quick-visible-height, 100svh) - 76px) !important;
+    overflow: visible !important;
+  }
+
+  .quick-dock:not(.collapsed) .quick-contact-group {
+    max-height: calc(var(--quick-visible-height, 100svh) - 142px) !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    overscroll-behavior: contain !important;
+  }
+
+  .quick-route-menu {
+    position: absolute !important;
+    top: auto !important;
+    right: 0 !important;
+    bottom: calc(100% + 9px) !important;
+    width: min(286px, calc(100vw - 16px)) !important;
+    max-height: clamp(
+      110px,
+      calc(var(--quick-visible-height, 100svh) - 320px),
+      260px
+    ) !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    overscroll-behavior: contain !important;
+  }
+}
