@@ -112,6 +112,15 @@
       }), routeMenu == null || routeMenu.addEventListener("click", (event) => event.stopPropagation()), document.addEventListener("click", () => {
         routeMenu == null || routeMenu.classList.remove("open"), routeToggle == null || routeToggle.setAttribute("aria-expanded", "false");
       });
+    }, ensureDonationPreviewFrames = () => {
+      document.querySelectorAll(".result-grid > article").forEach((card) => {
+        const image = card.querySelector(":scope > .donation-preview");
+        if (!image) return;
+        const frame = document.createElement("div");
+        frame.className = "donation-preview-frame";
+        card.insertBefore(frame, image);
+        frame.append(image);
+      });
     }, correctTempleNames = () => {
       const names = new Map([
         ["\u9EA5\u5BEE\u65BD\u539D\u93AE\u8056\u5BAE", "\u9EA5\u5BEE\u6A4B\u982D\u93AE\u8056\u5BAE"],
@@ -540,7 +549,7 @@
       } catch (e) {
       }
     }, ensureUi = () => {
-      installNavigation(), installHashNavigation(), installQuickDock(), installPhoneDialing(), installPortalMotion(), installFortuneFeedback(), installReliableVideoControls(), installSinglePageEbook(), correctTempleNames(), correctShimenGallery(), annotateDynamicContent(), normalizeEbook();
+      installNavigation(), installHashNavigation(), installQuickDock(), installPhoneDialing(), installPortalMotion(), installFortuneFeedback(), installReliableVideoControls(), installSinglePageEbook(), ensureDonationPreviewFrames(), correctTempleNames(), correctShimenGallery(), annotateDynamicContent(), normalizeEbook();
     }, boot = () => {
       if (ensureUi(), applyDraft(), !document.querySelector(".admin-entry")) {
         const admin = document.createElement("a");

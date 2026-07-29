@@ -614,3 +614,183 @@ body.preview-active {
     height: 42px !important;
   }
 }
+
+/* v72 — surgical fixes on top of the restored v69 baseline.
+   The quick-contact and home controls are intentionally untouched. */
+
+/* Donation cards keep the v69 layout. The frame only makes each preview
+   reliably fill its existing image cell after hydration on iPad/Android. */
+@media (min-width: 701px) {
+  .result-grid > article > .donation-preview-frame {
+    position: relative !important;
+    align-self: stretch !important;
+    box-sizing: border-box !important;
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    height: 100% !important;
+    min-height: 310px !important;
+    margin: 0 !important;
+    overflow: hidden !important;
+    background: #170908 !important;
+  }
+
+  .result-grid > article > .donation-preview-frame > .donation-preview {
+    position: absolute !important;
+    inset: 0 !important;
+    box-sizing: border-box !important;
+    display: block !important;
+    width: 100% !important;
+    min-width: 100% !important;
+    max-width: none !important;
+    height: 100% !important;
+    min-height: 100% !important;
+    max-height: none !important;
+    margin: 0 !important;
+    aspect-ratio: auto !important;
+    object-fit: cover !important;
+    transform: none !important;
+    background: transparent !important;
+    border: 0 !important;
+  }
+
+  .result-grid > article:nth-child(1) > .donation-preview-frame > .donation-preview {
+    object-position: center 74% !important;
+  }
+
+  .result-grid > article:nth-child(2) > .donation-preview-frame > .donation-preview {
+    object-position: center 50% !important;
+  }
+
+  .result-grid > article:nth-child(3) > .donation-preview-frame > .donation-preview {
+    object-position: center 32% !important;
+  }
+
+  .result-grid > article:nth-child(4) > .donation-preview-frame > .donation-preview {
+    object-position: center 28% !important;
+  }
+}
+
+/* Phone previews remain full-width and keep their natural aspect ratio. */
+@media (max-width: 700px) {
+  .result-grid > article > .donation-preview-frame {
+    display: block !important;
+    width: 100% !important;
+    min-width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    overflow: hidden !important;
+    background: transparent !important;
+  }
+
+  .result-grid > article > .donation-preview-frame > .donation-preview {
+    position: static !important;
+    display: block !important;
+    width: 100% !important;
+    min-width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    margin: 0 !important;
+    aspect-ratio: auto !important;
+    object-fit: contain !important;
+    transform: none !important;
+    background: transparent !important;
+    border: 0 !important;
+  }
+}
+
+/* Only the expanded tablet/desktop ebook is constrained. The normal ebook
+   receives no v72 selector and therefore remains exactly as it was in v69. */
+@media (min-width: 701px) {
+  .ebook-shade {
+    z-index: 310 !important;
+  }
+
+  .ebook.expanded {
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    right: auto !important;
+    bottom: auto !important;
+    z-index: 320 !important;
+    box-sizing: border-box !important;
+    width: min(1280px, calc(100vw - 24px)) !important;
+    max-width: calc(100vw - 24px) !important;
+    height: min(980px, calc(100dvh - 24px)) !important;
+    max-height: calc(100dvh - 24px) !important;
+    margin: 0 !important;
+    padding: 58px 18px 18px !important;
+    transform: translate(-50%, -50%) !important;
+    overflow: auto !important;
+    overscroll-behavior: contain !important;
+  }
+
+  .ebook.expanded .ebook-toolbar {
+    position: sticky !important;
+    top: -43px !important;
+    z-index: 325 !important;
+  }
+
+  .ebook.expanded .ebook-spread,
+  .ebook.expanded .ebook-spread:not(.single) {
+    width: min(1080px, calc(100vw - 60px), calc(141.3dvh - 268.5px)) !important;
+    max-width: 1080px !important;
+    height: auto !important;
+    margin-right: auto !important;
+    margin-left: auto !important;
+  }
+
+  .ebook.expanded .ebook-spread.single {
+    width: min(510px, calc(100vw - 60px), calc(70.65dvh - 134.25px)) !important;
+    max-width: 510px !important;
+  }
+
+  .ebook.expanded .ebook-page,
+  .ebook.expanded .ebook-page img {
+    box-sizing: border-box !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+  }
+
+  .ebook.expanded .ebook-page img {
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+    max-height: calc(100dvh - 190px) !important;
+    object-fit: contain !important;
+  }
+
+  .ebook.expanded .ebook-close {
+    position: fixed !important;
+    top: max(10px, env(safe-area-inset-top)) !important;
+    right: max(10px, env(safe-area-inset-right)) !important;
+    z-index: 340 !important;
+  }
+}
+
+/* Android tablets: allow every portal card to grow with wrapped text, while
+   keeping the complete 壹貳參 row within the original paper section. */
+@media (min-width: 701px) and (max-width: 1180px) {
+  .culture-portals {
+    box-sizing: border-box !important;
+    grid-auto-rows: auto !important;
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+  }
+
+  .culture-portals > a,
+  .culture-portals > a:nth-child(2),
+  .culture-portals > a:nth-child(2):hover {
+    box-sizing: border-box !important;
+    height: auto !important;
+    min-height: 145px !important;
+    max-height: none !important;
+    transform: none !important;
+  }
+}
