@@ -129,3 +129,59 @@
 .hero-lanterns i {
   top: calc(var(--fixed-header) + 28px) !important;
 }
+/* iPad Safari：募捐圖片完整填滿預覽框 */
+@media (min-width: 701px) and (max-width: 1180px) {
+  .donation-preview-frame {
+    position: relative !important;
+    display: block !important;
+    width: 100% !important;
+    height: 320px !important;
+    min-height: 320px !important;
+    overflow: hidden !important;
+  }
+
+  .donation-preview-frame .donation-preview {
+    position: absolute !important;
+    inset: 0 !important;
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-width: 100% !important;
+    min-height: 100% !important;
+    max-width: none !important;
+    max-height: none !important;
+    object-fit: cover !important;
+  }
+}
+
+/* Android：壹貳參不得超出米黃色底色 */
+@media (max-width: 1180px) {
+  .culture-portals {
+    box-sizing: border-box !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+    padding-right: max(16px, env(safe-area-inset-right)) !important;
+    padding-left: max(16px, env(safe-area-inset-left)) !important;
+  }
+
+  .culture-portals > a {
+    box-sizing: border-box !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    margin-right: 0 !important;
+    margin-left: 0 !important;
+  }
+}
+
+/* Android：擴大時間軸觸控範圍 */
+.video-timeline input[type="range"] {
+  position: relative !important;
+  z-index: 20 !important;
+  width: 100% !important;
+  height: 44px !important;
+  pointer-events: auto !important;
+  touch-action: none !important;
+}
