@@ -909,3 +909,96 @@ body.preview-active {
     bottom: calc(100% + 184px) !important;
   }
 }
+
+/* v78 — device-independent icons. These shapes do not use emoji or
+   operating-system symbol fonts, so iOS, Android, Windows and macOS match. */
+.stable-external-control {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.55em !important;
+}
+
+.stable-external-control::before {
+  content: attr(data-stable-icon-label);
+}
+
+.stable-external-control::after {
+  content: "";
+  flex: 0 0 auto;
+  width: 13px;
+  height: 13px;
+  background:
+    linear-gradient(currentColor, currentColor) 100% 0 / 8px 2px no-repeat,
+    linear-gradient(currentColor, currentColor) 100% 0 / 2px 8px no-repeat,
+    linear-gradient(
+      45deg,
+      transparent 43%,
+      currentColor 44% 56%,
+      transparent 57%
+    ) 50% 50% / 100% 100% no-repeat;
+}
+
+.stable-play-control {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.45em !important;
+}
+
+.stable-play-control::before {
+  content: "";
+  flex: 0 0 auto;
+  width: 0;
+  height: 0;
+  border-top: 7px solid transparent;
+  border-bottom: 7px solid transparent;
+  border-left: 11px solid currentColor;
+}
+
+.stable-play-control[aria-label^="暫停"]::before {
+  width: 11px;
+  height: 14px;
+  border: 0;
+  background:
+    linear-gradient(currentColor, currentColor) 0 0 / 4px 100% no-repeat,
+    linear-gradient(currentColor, currentColor) 100% 0 / 4px 100% no-repeat;
+}
+
+.stable-play-labeled::after {
+  content: attr(aria-label);
+}
+
+.culture-portals .stable-yinyang-icon {
+  position: relative !important;
+  overflow: hidden !important;
+  font-size: 0 !important;
+  background:
+    radial-gradient(
+      circle at 50% 25%,
+      #74140f 0 7%,
+      #f2dcae 8% 25%,
+      transparent 26%
+    ),
+    radial-gradient(
+      circle at 50% 75%,
+      #f2dcae 0 7%,
+      #74140f 8% 25%,
+      transparent 26%
+    ),
+    linear-gradient(90deg, #74140f 0 50%, #f2dcae 50% 100%) !important;
+}
+
+@media (max-width: 700px) {
+  .stable-external-control::after {
+    width: 11px;
+    height: 11px;
+    background-size: 7px 2px, 2px 7px, 100% 100%;
+  }
+
+  .stable-play-control::before {
+    border-top-width: 6px;
+    border-bottom-width: 6px;
+    border-left-width: 10px;
+  }
+}
