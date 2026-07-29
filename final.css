@@ -95,6 +95,231 @@
   }
 }
 
+/* v70: real iPad / Android tablet fixes.
+   The usable visual viewport is supplied by custom.js so browser bars cannot
+   push the video or ebook controls outside the screen. */
+@media (min-width: 701px) {
+  .video-card.expanded,
+  .video-card:last-child.expanded {
+    width: min(var(--video-viewer-width, 1000px), calc(100vw - 24px)) !important;
+    max-width: calc(100vw - 24px) !important;
+    max-height: calc(var(--app-visual-height, 100dvh) - 24px) !important;
+    overflow: hidden !important;
+  }
+
+  .video-card.expanded .video-poster {
+    width: 100% !important;
+    height: auto !important;
+    max-height: none !important;
+    aspect-ratio: 16 / 9 !important;
+    flex: 0 0 auto !important;
+  }
+
+  .video-card.expanded .video-seek {
+    flex: 0 0 auto !important;
+  }
+
+  .ebook.expanded {
+    position: fixed !important;
+    inset: auto !important;
+    top: 50% !important;
+    left: 50% !important;
+    z-index: 300 !important;
+    box-sizing: border-box !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 10px !important;
+    width: min(1120px, calc(100vw - 24px)) !important;
+    max-width: calc(100vw - 24px) !important;
+    height: calc(var(--app-visual-height, 100dvh) - 24px) !important;
+    max-height: calc(var(--app-visual-height, 100dvh) - 24px) !important;
+    margin: 0 !important;
+    padding: 12px !important;
+    transform: translate(-50%, -50%) !important;
+    overflow: hidden !important;
+    overscroll-behavior: contain !important;
+  }
+
+  .ebook.expanded .ebook-toolbar {
+    position: relative !important;
+    inset: auto !important;
+    flex: 0 0 58px !important;
+    box-sizing: border-box !important;
+    width: min(900px, 100%) !important;
+    max-width: 100% !important;
+    height: 58px !important;
+    min-height: 58px !important;
+    margin: 0 !important;
+    padding: 6px 66px 6px 10px !important;
+  }
+
+  .ebook.expanded .ebook-spread:not(.single) {
+    flex: 0 0 auto !important;
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    width: var(--ebook-spread-width, min(860px, calc(100vw - 48px))) !important;
+    max-width: calc(100vw - 48px) !important;
+    height: auto !important;
+    max-height: calc(var(--app-visual-height, 100dvh) - 114px) !important;
+    aspect-ratio: 1800 / 1274 !important;
+    margin: auto 0 !important;
+    overflow: hidden !important;
+  }
+
+  .ebook.expanded .ebook-spread.single {
+    flex: 0 0 auto !important;
+    display: block !important;
+    width: var(--ebook-page-width, min(430px, calc(100vw - 48px))) !important;
+    max-width: calc(100vw - 48px) !important;
+    height: auto !important;
+    max-height: calc(var(--app-visual-height, 100dvh) - 114px) !important;
+    aspect-ratio: 900 / 1274 !important;
+    margin: auto 0 !important;
+    overflow: hidden !important;
+  }
+
+  .ebook.expanded .ebook-page,
+  .ebook.expanded .ebook-page img {
+    box-sizing: border-box !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    max-height: 100% !important;
+  }
+
+  .ebook.expanded .ebook-page img {
+    object-fit: fill !important;
+  }
+
+  .ebook.expanded .page-jump,
+  .ebook.expanded .ebook-hint {
+    display: none !important;
+  }
+
+  .ebook.expanded .ebook-close {
+    position: fixed !important;
+    top: max(10px, env(safe-area-inset-top)) !important;
+    right: max(10px, env(safe-area-inset-right)) !important;
+    z-index: 330 !important;
+  }
+}
+
+/* Tablet donation cards use the same full-width image-first structure as
+   phones. This targets the live React markup, where the frame wrapper is not
+   retained after hydration. */
+@media (min-width: 701px) and (max-width: 1180px) {
+  .result-grid > article {
+    display: block !important;
+    grid-template-columns: none !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .result-grid > article > .donation-preview,
+  .result-grid > article:nth-child(2) > .donation-preview {
+    display: block !important;
+    width: 100% !important;
+    min-width: 100% !important;
+    max-width: 100% !important;
+    height: 320px !important;
+    min-height: 320px !important;
+    max-height: 320px !important;
+    margin: 0 !important;
+    object-fit: cover !important;
+    transform: none !important;
+  }
+
+  .result-grid > article:nth-child(1) > .donation-preview {
+    object-position: center 74% !important;
+  }
+
+  .result-grid > article:nth-child(2) > .donation-preview {
+    object-position: center 50% !important;
+  }
+
+  .result-grid > article:nth-child(3) > .donation-preview {
+    object-position: center 32% !important;
+  }
+
+  .result-grid > article:nth-child(4) > .donation-preview {
+    object-position: center 28% !important;
+  }
+
+  .result-grid > article > .result-copy {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* Equal, bounded cards prevent Android WebView from resolving the middle
+     card to a different intrinsic height. */
+  .culture-portals {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    align-items: stretch !important;
+    gap: 18px !important;
+    overflow: hidden !important;
+  }
+
+  .culture-portals > a,
+  .culture-portals > a:nth-child(2),
+  .culture-portals > a:nth-child(2):hover {
+    box-sizing: border-box !important;
+    display: grid !important;
+    align-items: center !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 145px !important;
+    min-height: 145px !important;
+    max-height: 145px !important;
+    margin: 0 !important;
+    transform: none !important;
+    overflow: hidden !important;
+  }
+}
+
+/* iPad Safari/Chrome can report a landscape width above the shared 1180px
+   tablet breakpoint. Keep the same full-bleed donation layout on WebKit
+   touch devices up to the largest iPad width. */
+@supports (-webkit-touch-callout: none) {
+  @media (min-width: 701px) and (max-width: 1366px) {
+    .result-grid > article {
+      display: block !important;
+      grid-template-columns: none !important;
+    }
+
+    .result-grid > article > .donation-preview,
+    .result-grid > article:nth-child(2) > .donation-preview {
+      display: block !important;
+      width: 100% !important;
+      min-width: 100% !important;
+      max-width: 100% !important;
+      height: 320px !important;
+      min-height: 320px !important;
+      max-height: 320px !important;
+      margin: 0 !important;
+      object-fit: cover !important;
+      transform: none !important;
+    }
+
+    .result-grid > article:nth-child(1) > .donation-preview {
+      object-position: center 74% !important;
+    }
+
+    .result-grid > article:nth-child(2) > .donation-preview {
+      object-position: center 50% !important;
+    }
+
+    .result-grid > article:nth-child(3) > .donation-preview {
+      object-position: center 32% !important;
+    }
+
+    .result-grid > article:nth-child(4) > .donation-preview {
+      object-position: center 28% !important;
+    }
+  }
+}
+
 /* Restore the original swaying 歲、安 lantern animation on tablet and phone. */
 @media (max-width: 1180px) {
   .hero-lanterns {
@@ -612,5 +837,244 @@ body.preview-active {
 
   .video-card.expanded .video-timeline input[type="range"] {
     height: 42px !important;
+  }
+}
+
+/* v70 final overrides — intentionally last in this file. */
+@media (min-width: 701px) {
+  .video-card.expanded,
+  .video-card:last-child.expanded {
+    width: min(var(--video-viewer-width, 1000px), calc(100vw - 24px)) !important;
+    max-width: calc(100vw - 24px) !important;
+    max-height: calc(var(--app-visual-height, 100dvh) - 24px) !important;
+    overflow: hidden !important;
+  }
+
+  .video-card.expanded .video-poster {
+    width: 100% !important;
+    height: auto !important;
+    max-height: none !important;
+    aspect-ratio: 16 / 9 !important;
+  }
+
+  .ebook.expanded {
+    position: fixed !important;
+    inset: auto !important;
+    top: 50% !important;
+    left: 50% !important;
+    z-index: 300 !important;
+    box-sizing: border-box !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 10px !important;
+    width: min(1120px, calc(100vw - 24px)) !important;
+    max-width: calc(100vw - 24px) !important;
+    height: calc(var(--app-visual-height, 100dvh) - 24px) !important;
+    max-height: calc(var(--app-visual-height, 100dvh) - 24px) !important;
+    margin: 0 !important;
+    padding: 12px !important;
+    transform: translate(-50%, -50%) !important;
+    overflow: hidden !important;
+  }
+
+  .ebook.expanded .ebook-toolbar {
+    position: relative !important;
+    inset: auto !important;
+    flex: 0 0 58px !important;
+    box-sizing: border-box !important;
+    width: min(900px, 100%) !important;
+    max-width: 100% !important;
+    height: 58px !important;
+    min-height: 58px !important;
+    margin: 0 !important;
+    padding: 6px 66px 6px 10px !important;
+  }
+
+  .ebook.expanded .ebook-spread:not(.single) {
+    flex: 0 0 auto !important;
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    width: var(--ebook-spread-width, min(860px, calc(100vw - 48px))) !important;
+    max-width: calc(100vw - 48px) !important;
+    height: auto !important;
+    max-height: calc(var(--app-visual-height, 100dvh) - 114px) !important;
+    aspect-ratio: 1800 / 1274 !important;
+    margin: auto 0 !important;
+    overflow: hidden !important;
+  }
+
+  .ebook.expanded .ebook-spread.single {
+    flex: 0 0 auto !important;
+    display: block !important;
+    width: var(--ebook-page-width, min(430px, calc(100vw - 48px))) !important;
+    max-width: calc(100vw - 48px) !important;
+    height: auto !important;
+    max-height: calc(var(--app-visual-height, 100dvh) - 114px) !important;
+    aspect-ratio: 900 / 1274 !important;
+    margin: auto 0 !important;
+    overflow: hidden !important;
+  }
+
+  .ebook.expanded .ebook-page,
+  .ebook.expanded .ebook-page img {
+    box-sizing: border-box !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    max-height: 100% !important;
+  }
+
+  .ebook.expanded .ebook-page img {
+    object-fit: fill !important;
+  }
+
+  .ebook.expanded .page-jump,
+  .ebook.expanded .ebook-hint {
+    display: none !important;
+  }
+
+  .ebook.expanded .ebook-close {
+    position: fixed !important;
+    top: max(10px, env(safe-area-inset-top)) !important;
+    right: max(10px, env(safe-area-inset-right)) !important;
+    z-index: 330 !important;
+  }
+}
+
+@media (min-width: 701px) and (max-height: 700px) {
+  .video-card.expanded,
+  .video-card:last-child.expanded {
+    width: min(760px, calc(100vw - 24px)) !important;
+  }
+
+  .ebook.expanded .ebook-spread:not(.single) {
+    width: min(620px, calc(100vw - 48px)) !important;
+  }
+
+  .ebook.expanded .ebook-spread.single {
+    width: min(310px, calc(100vw - 48px)) !important;
+  }
+}
+
+@media (min-width: 701px) and (max-height: 560px) {
+  .video-card.expanded,
+  .video-card:last-child.expanded {
+    width: min(640px, calc(100vw - 20px)) !important;
+  }
+
+  .ebook.expanded .ebook-spread:not(.single) {
+    width: min(500px, calc(100vw - 40px)) !important;
+  }
+
+  .ebook.expanded .ebook-spread.single {
+    width: min(250px, calc(100vw - 40px)) !important;
+  }
+}
+
+@media (min-width: 701px) and (max-width: 1180px) {
+  .result-grid > article {
+    display: block !important;
+    grid-template-columns: none !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .result-grid > article > .donation-preview,
+  .result-grid > article:nth-child(2) > .donation-preview {
+    display: block !important;
+    width: 100% !important;
+    min-width: 100% !important;
+    max-width: 100% !important;
+    height: 320px !important;
+    min-height: 320px !important;
+    max-height: 320px !important;
+    margin: 0 !important;
+    object-fit: cover !important;
+    transform: none !important;
+  }
+
+  .result-grid > article:nth-child(1) > .donation-preview {
+    object-position: center 74% !important;
+  }
+
+  .result-grid > article:nth-child(2) > .donation-preview {
+    object-position: center 50% !important;
+  }
+
+  .result-grid > article:nth-child(3) > .donation-preview {
+    object-position: center 32% !important;
+  }
+
+  .result-grid > article:nth-child(4) > .donation-preview {
+    object-position: center 28% !important;
+  }
+
+  .result-grid > article > .result-copy {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .culture-portals {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    align-items: stretch !important;
+    gap: 18px !important;
+    overflow: hidden !important;
+  }
+
+  .culture-portals > a,
+  .culture-portals > a:nth-child(2),
+  .culture-portals > a:nth-child(2):hover {
+    box-sizing: border-box !important;
+    display: grid !important;
+    align-items: center !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 145px !important;
+    min-height: 145px !important;
+    max-height: 145px !important;
+    margin: 0 !important;
+    transform: none !important;
+    overflow: hidden !important;
+  }
+}
+
+@supports (-webkit-touch-callout: none) {
+  @media (min-width: 701px) and (max-width: 1366px) {
+    .result-grid > article {
+      display: block !important;
+      grid-template-columns: none !important;
+    }
+
+    .result-grid > article > .donation-preview,
+    .result-grid > article:nth-child(2) > .donation-preview {
+      display: block !important;
+      width: 100% !important;
+      min-width: 100% !important;
+      max-width: 100% !important;
+      height: 320px !important;
+      min-height: 320px !important;
+      max-height: 320px !important;
+      margin: 0 !important;
+      object-fit: cover !important;
+      transform: none !important;
+    }
+
+    .result-grid > article:nth-child(1) > .donation-preview {
+      object-position: center 74% !important;
+    }
+
+    .result-grid > article:nth-child(2) > .donation-preview {
+      object-position: center 50% !important;
+    }
+
+    .result-grid > article:nth-child(3) > .donation-preview {
+      object-position: center 32% !important;
+    }
+
+    .result-grid > article:nth-child(4) > .donation-preview {
+      object-position: center 28% !important;
+    }
   }
 }

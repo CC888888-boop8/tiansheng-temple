@@ -561,3 +561,38 @@ import("/site-content-loader.js?v=5").catch((error) => {
   document.documentElement.dataset.editableContent = "error";
   console.error("Editable content loader could not start.", error);
 });
+
+/* v70: keep tablet viewers inside the browser's real visible area.
+   visualViewport accounts for Safari/Chrome toolbars that appear or collapse. */
+(() => {
+  if (document.documentElement.dataset.visualViewportSizing === "ready") return;
+  document.documentElement.dataset.visualViewportSizing = "ready";
+
+  const syncViewerSizing = () => {
+    const viewport = window.visualViewport;
+    const width = Math.max(320, viewport ? viewport.width : window.innerWidth);
+    const height = Math.max(320, viewport ? viewport.height : window.innerHeight);
+    const videoWidth = Math.max(
+      320,
+      Math.min(1000, width - 24, (height - 160) * (16 / 9))
+    );
+    const ebookSpreadWidth = Math.max(
+      360,
+      Math.min(860, width - 48, (height - 162) * (1800 / 1274))
+    );
+
+    document.documentElement.style.setProperty("--app-visual-height", `${height}px`);
+    document.documentElement.style.setProperty("--video-viewer-width", `${videoWidth}px`);
+    document.documentElement.style.setProperty("--ebook-spread-width", `${ebookSpreadWidth}px`);
+    document.documentElement.style.setProperty("--ebook-page-width", `${ebookSpreadWidth / 2}px`);
+    document.documentElement.dataset.visualViewportSizing = "ready";
+  };
+
+  syncViewerSizing();
+  window.setTimeout(syncViewerSizing, 1000);
+  window.setTimeout(syncViewerSizing, 2200);
+  window.addEventListener("resize", syncViewerSizing, { passive: true });
+  window.addEventListener("orientationchange", syncViewerSizing, { passive: true });
+  window.visualViewport?.addEventListener("resize", syncViewerSizing, { passive: true });
+  window.visualViewport?.addEventListener("scroll", syncViewerSizing, { passive: true });
+})();
