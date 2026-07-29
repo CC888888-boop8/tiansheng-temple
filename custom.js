@@ -147,6 +147,124 @@
       const previewActive = !!document.querySelector(".ebook.expanded,.video-card.expanded,.service-modal,.donation-modal-backdrop,.photo-lightbox");
       document.body.classList.toggle("service-modal-active", !!document.querySelector(".service-modal"));
       document.body.classList.toggle("preview-active", previewActive);
+    }, installReliableVideoControls = () => {
+      if (document.documentElement.dataset.reliableVideoControls === "ready") return;
+      document.documentElement.dataset.reliableVideoControls = "ready";
+      const blobLoads = new WeakMap();
+      let activeInput = null, activeVideo = null, activePointer = null;
+      const videoFor = (input) => {
+        const card = input == null ? null : input.closest(".video-card");
+        return card == null ? null : card.querySelector("video");
+      };
+      const durationFor = (input, video) => Number.isFinite(video.duration) && video.duration > 0 ? video.duration : Number(input.max) || 0;
+      const fractionAt = (input, clientX) => {
+        const rect = input.getBoundingClientRect();
+        return rect.width > 0 ? Math.max(0, Math.min(1, (clientX - rect.left) / rect.width)) : 0;
+      };
+      const setTime = (input, video, fraction) => {
+        const duration = durationFor(input, video);
+        if (duration <= 0) return false;
+        const time = Math.max(0, Math.min(duration, fraction * duration));
+        input.max = String(duration);
+        input.value = String(time);
+        try {
+          video.currentTime = time;
+        } catch (error) {
+          return false;
+        }
+        return true;
+      };
+      const hasSeekableMedia = (video) => {
+        try {
+          return video.seekable.length > 0 && video.seekable.end(video.seekable.length - 1) > 0;
+        } catch (error) {
+          return false;
+        }
+      };
+      const makeSeekable = (video) => {
+        if (hasSeekableMedia(video) || video.dataset.blobReady === "true") return Promise.resolve(video);
+        const existing = blobLoads.get(video);
+        if (existing) return existing;
+        const source = video.getAttribute("src") || video.currentSrc;
+        if (!source || source.startsWith("blob:")) return Promise.resolve(video);
+        const card = video.closest(".video-card");
+        card == null || card.classList.add("video-source-loading");
+        const task = fetch(source, { credentials: "same-origin", cache: "force-cache" }).then((response) => {
+          if (!response.ok) throw new Error(`Video request failed: ${response.status}`);
+          return response.blob();
+        }).then((blob) => new Promise((resolve, reject) => {
+          const wasPlaying = !video.paused, objectUrl = URL.createObjectURL(blob);
+          const onReady = () => {
+            video.removeEventListener("error", onError);
+            video.dataset.blobReady = "true";
+            card == null || card.classList.remove("video-source-loading");
+            wasPlaying && video.play().catch(() => {
+            });
+            resolve(video);
+          };
+          const onError = () => {
+            video.removeEventListener("loadedmetadata", onReady);
+            URL.revokeObjectURL(objectUrl);
+            reject(new Error("Video blob could not be loaded"));
+          };
+          video.addEventListener("loadedmetadata", onReady, { once: !0 });
+          video.addEventListener("error", onError, { once: !0 });
+          video.pause();
+          video.src = objectUrl;
+          video.load();
+        })).catch(() => {
+          card == null || card.classList.remove("video-source-loading");
+          return video;
+        });
+        blobLoads.set(video, task);
+        return task;
+      };
+      const seekAt = (input, video, fraction) => {
+        if (hasSeekableMedia(video) && setTime(input, video, fraction)) return;
+        makeSeekable(video).then(() => {
+          setTime(input, video, fraction);
+        });
+      };
+      const finish = (event) => {
+        if (!activeInput || !activeVideo || activePointer !== event.pointerId) return;
+        seekAt(activeInput, activeVideo, fractionAt(activeInput, event.clientX));
+        activeInput.dataset.timelineDragging = "false";
+        activeInput = null;
+        activeVideo = null;
+        activePointer = null;
+        event.preventDefault();
+      };
+      document.addEventListener("pointerdown", (event) => {
+        const input = event.target && event.target.closest ? event.target.closest(".video-timeline input[type='range']") : null;
+        const video = videoFor(input);
+        if (!input || !video) return;
+        activeInput = input;
+        activeVideo = video;
+        activePointer = event.pointerId;
+        input.dataset.timelineDragging = "true";
+        seekAt(input, video, fractionAt(input, event.clientX));
+        event.preventDefault();
+      }, { capture: !0, passive: !1 });
+      document.addEventListener("pointermove", (event) => {
+        if (!activeInput || !activeVideo || activePointer !== event.pointerId) return;
+        seekAt(activeInput, activeVideo, fractionAt(activeInput, event.clientX));
+        event.preventDefault();
+      }, { capture: !0, passive: !1 });
+      document.addEventListener("pointerup", finish, { capture: !0, passive: !1 });
+      document.addEventListener("pointercancel", finish, { capture: !0, passive: !1 });
+      document.addEventListener("keydown", (event) => {
+        const input = event.target && event.target.closest ? event.target.closest(".video-timeline input[type='range']") : null;
+        const video = videoFor(input);
+        if (!input || !video || !["ArrowLeft", "ArrowRight", "Home", "End", "PageUp", "PageDown"].includes(event.key)) return;
+        const duration = durationFor(input, video);
+        if (duration <= 0) return;
+        let next = Number(input.value) || 0;
+        if (event.key === "Home") next = 0;
+        else if (event.key === "End") next = duration;
+        else next += ["ArrowRight", "PageUp"].includes(event.key) ? 10 : -10;
+        seekAt(input, video, Math.max(0, Math.min(1, next / duration)));
+        event.preventDefault();
+      }, !0);
     }, installVideoSeeking = () => {
       if (document.documentElement.dataset.videoSeeking === "ready") return;
       document.documentElement.dataset.videoSeeking = "ready";
@@ -387,7 +505,7 @@
       } catch (e) {
       }
     }, ensureUi = () => {
-      installNavigation(), installHashNavigation(), installQuickDock(), installPhoneDialing(), installPortalMotion(), installFortuneFeedback(), installSinglePageEbook(), correctTempleNames(), correctShimenGallery(), annotateDynamicContent(), normalizeEbook();
+      installNavigation(), installHashNavigation(), installQuickDock(), installPhoneDialing(), installPortalMotion(), installFortuneFeedback(), installReliableVideoControls(), installSinglePageEbook(), correctTempleNames(), correctShimenGallery(), annotateDynamicContent(), normalizeEbook();
     }, boot = () => {
       if (ensureUi(), applyDraft(), !document.querySelector(".admin-entry")) {
         const admin = document.createElement("a");
