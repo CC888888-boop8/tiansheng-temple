@@ -252,6 +252,41 @@
       }, { capture: !0, passive: !1 });
       document.addEventListener("pointerup", finish, { capture: !0, passive: !1 });
       document.addEventListener("pointercancel", finish, { capture: !0, passive: !1 });
+      document.addEventListener("click", (event) => {
+        const button = event.target && event.target.closest ? event.target.closest(".video-buttons button,.video-center-play") : null;
+        const card = button == null ? null : button.closest(".video-card");
+        const video = card == null ? null : card.querySelector("video");
+        if (!button || !video) return;
+        const label = button.getAttribute("aria-label") || "";
+        if (button.classList.contains("video-center-play") || label === "\u64AD\u653E" || label === "\u66AB\u505C") {
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          video.paused ? video.play().catch(() => {
+          }) : video.pause();
+          return;
+        }
+        if (label !== "\u5012\u9000\u5341\u79D2" && label !== "\u5FEB\u9032\u5341\u79D2") return;
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        const duration = durationFor(card.querySelector(".video-timeline input[type='range']"), video);
+        if (duration <= 0) return;
+        const delta = label === "\u5FEB\u9032\u5341\u79D2" ? 10 : -10;
+        const input = card.querySelector(".video-timeline input[type='range']");
+        const pending = Number(video.dataset.pendingControlTime);
+        const base = Number.isFinite(pending) ? pending : video.currentTime || 0;
+        const target = Math.max(0, Math.min(duration, base + delta));
+        if (hasSeekableMedia(video)) {
+          delete video.dataset.pendingControlTime;
+          setTime(input, video, target / duration);
+          return;
+        }
+        video.dataset.pendingControlTime = String(target);
+        makeSeekable(video).then(() => {
+          const latest = Number(video.dataset.pendingControlTime);
+          Number.isFinite(latest) && setTime(input, video, latest / duration);
+          delete video.dataset.pendingControlTime;
+        });
+      }, !0);
       document.addEventListener("keydown", (event) => {
         const input = event.target && event.target.closest ? event.target.closest(".video-timeline input[type='range']") : null;
         const video = videoFor(input);
