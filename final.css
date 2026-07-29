@@ -264,3 +264,75 @@
     width: 100% !important;
   }
 }
+
+/* Soften the home image into the wine-red artwork without changing its crop. */
+@media (min-width: 1181px) {
+  .hero::before {
+    content: "" !important;
+    display: block !important;
+    position: absolute !important;
+    z-index: 2 !important;
+    pointer-events: none !important;
+    inset: 108px 0 0 !important;
+    background:
+      linear-gradient(
+        90deg,
+        rgba(48, 7, 5, 0.96) 0%,
+        rgba(53, 8, 6, 0.88) 18%,
+        rgba(58, 9, 7, 0.66) 30%,
+        rgba(55, 8, 6, 0.34) 42%,
+        rgba(45, 7, 5, 0.12) 53%,
+        transparent 64%
+      ),
+      linear-gradient(
+        180deg,
+        transparent 57%,
+        rgba(42, 6, 4, 0.08) 70%,
+        rgba(42, 6, 4, 0.4) 100%
+      ) !important;
+  }
+
+  .hero-deity-photo {
+    -webkit-mask-image: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(0, 0, 0, 0.12) 7%,
+      rgba(0, 0, 0, 0.48) 19%,
+      #000 35%,
+      #000 92%,
+      transparent 100%
+    ) !important;
+    mask-image: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(0, 0, 0, 0.12) 7%,
+      rgba(0, 0, 0, 0.48) 19%,
+      #000 35%,
+      #000 92%,
+      transparent 100%
+    ) !important;
+  }
+}
+
+@media (max-width: 1180px) {
+  .hero::before {
+    content: "" !important;
+    display: block !important;
+    position: absolute !important;
+    z-index: 2 !important;
+    pointer-events: none !important;
+    inset: var(--fixed-header) 0 auto !important;
+    height: clamp(414px, 54vw, 520px) !important;
+    background:
+      linear-gradient(
+        180deg,
+        transparent 0%,
+        transparent 52%,
+        rgba(55, 8, 6, 0.08) 62%,
+        rgba(55, 8, 6, 0.28) 73%,
+        rgba(55, 8, 6, 0.62) 84%,
+        rgba(55, 8, 6, 0.88) 94%,
+        #370806 100%
+      ) !important;
+  }
+}
