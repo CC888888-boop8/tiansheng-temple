@@ -562,13 +562,13 @@ import("/site-content-loader.js?v=5").catch((error) => {
   console.error("Editable content loader could not start.", error);
 });
 
-/* v70: keep tablet viewers inside the browser's real visible area.
-   visualViewport accounts for Safari/Chrome toolbars that appear or collapse. */
+/* v71: use the real visible browser area without changing the normal ebook
+   or donation-card layout. */
 (() => {
-  if (document.documentElement.dataset.visualViewportSizing === "ready") return;
-  document.documentElement.dataset.visualViewportSizing = "ready";
+  let stableQuickHeight = null;
+  let quickViewportWidth = null;
 
-  const syncViewerSizing = () => {
+  const syncViewportMetrics = (resetQuickAnchor = false) => {
     const viewport = window.visualViewport;
     const width = Math.max(320, viewport ? viewport.width : window.innerWidth);
     const height = Math.max(320, viewport ? viewport.height : window.innerHeight);
@@ -576,23 +576,42 @@ import("/site-content-loader.js?v=5").catch((error) => {
       320,
       Math.min(1000, width - 24, (height - 160) * (16 / 9))
     );
-    const ebookSpreadWidth = Math.max(
-      360,
-      Math.min(860, width - 48, (height - 162) * (1800 / 1274))
+    const ebookPageWidth = Math.max(
+      430,
+      Math.min(560, width - 48, (height - 124) * (900 / 1274))
     );
+
+    if (
+      width <= 700 &&
+      (resetQuickAnchor ||
+        stableQuickHeight === null ||
+        quickViewportWidth === null ||
+        Math.abs(width - quickViewportWidth) > 80)
+    ) {
+      stableQuickHeight = height;
+      quickViewportWidth = width;
+    } else if (width <= 700) {
+      stableQuickHeight = Math.min(stableQuickHeight, height);
+    }
 
     document.documentElement.style.setProperty("--app-visual-height", `${height}px`);
     document.documentElement.style.setProperty("--video-viewer-width", `${videoWidth}px`);
-    document.documentElement.style.setProperty("--ebook-spread-width", `${ebookSpreadWidth}px`);
-    document.documentElement.style.setProperty("--ebook-page-width", `${ebookSpreadWidth / 2}px`);
-    document.documentElement.dataset.visualViewportSizing = "ready";
+    document.documentElement.style.setProperty("--ebook-expanded-page-width", `${ebookPageWidth}px`);
+    document.documentElement.style.setProperty("--ebook-expanded-spread-width", `${ebookPageWidth * 2}px`);
+    if (width <= 700 && stableQuickHeight !== null) {
+      document.documentElement.style.setProperty("--quick-stable-height", `${stableQuickHeight}px`);
+    }
   };
 
-  syncViewerSizing();
-  window.setTimeout(syncViewerSizing, 1000);
-  window.setTimeout(syncViewerSizing, 2200);
-  window.addEventListener("resize", syncViewerSizing, { passive: true });
-  window.addEventListener("orientationchange", syncViewerSizing, { passive: true });
-  window.visualViewport?.addEventListener("resize", syncViewerSizing, { passive: true });
-  window.visualViewport?.addEventListener("scroll", syncViewerSizing, { passive: true });
+  syncViewportMetrics(true);
+  window.setTimeout(() => syncViewportMetrics(true), 1000);
+  window.setTimeout(() => syncViewportMetrics(true), 2200);
+  window.addEventListener("resize", () => syncViewportMetrics(false), { passive: true });
+  window.addEventListener("orientationchange", () => {
+    stableQuickHeight = null;
+    quickViewportWidth = null;
+    window.setTimeout(() => syncViewportMetrics(true), 120);
+  }, { passive: true });
+  window.visualViewport?.addEventListener("resize", () => syncViewportMetrics(false), { passive: true });
+  window.visualViewport?.addEventListener("scroll", () => syncViewportMetrics(false), { passive: true });
 })();
