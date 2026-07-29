@@ -152,6 +152,44 @@
         stableHeight = 0, orientation = "", queueSync();
       }, { passive: !0 });
       window.visualViewport && (window.visualViewport.addEventListener("resize", queueSync, { passive: !0 }), window.visualViewport.addEventListener("scroll", queueSync, { passive: !0 }));
+    }, normalizeLunarDate = () => {
+      const rows = [...document.querySelectorAll(".almanac-date p")];
+      const row = rows.find((element) => {
+        var _a;
+        return ((_a = element.querySelector("span")) == null ? void 0 : _a.textContent.trim()) === "\u8FB2\u66C6";
+      });
+      if (!row) return;
+      try {
+        const date = new Date(), formatter = new Intl.DateTimeFormat("zh-TW-u-ca-chinese", {
+          timeZone: "Asia/Taipei",
+          year: "numeric",
+          month: "long",
+          day: "numeric"
+        }), parts = formatter.formatToParts(date), part = (type) => {
+          var _a;
+          return ((_a = parts.find((item) => item.type === type)) == null ? void 0 : _a.value) || "";
+        };
+        let relatedYear = Number(part("relatedYear").replace(/[^\d]/g, ""));
+        if (!relatedYear) {
+          const fallback = new Intl.DateTimeFormat("en-u-ca-chinese", {
+            timeZone: "Asia/Taipei",
+            year: "numeric"
+          }).format(date).match(/\d{4}/);
+          relatedYear = fallback ? Number(fallback[0]) : Number(new Intl.DateTimeFormat("en", {
+            timeZone: "Asia/Taipei",
+            year: "numeric"
+          }).format(date));
+        }
+        const stems = ["\u7532", "\u4E59", "\u4E19", "\u4E01", "\u620A", "\u5DF1", "\u5E9A", "\u8F9B", "\u58EC", "\u7678"], branches = ["\u5B50", "\u4E11", "\u5BC5", "\u536F", "\u8FB0", "\u5DF3", "\u5348", "\u672A", "\u7533", "\u9149", "\u620C", "\u4EA5"], modulo = (value, divisor) => (value % divisor + divisor) % divisor, yearName = `${stems[modulo(relatedYear - 4, 10)]}${branches[modulo(relatedYear - 4, 12)]}`;
+        const rawMonth = part("month").replace(/\s/g, ""), leap = /[\u958F\u95F0]/.test(rawMonth), monthNumberMatch = rawMonth.match(/\d+/), monthNames = ["", "\u6B63", "\u4E8C", "\u4E09", "\u56DB", "\u4E94", "\u516D", "\u4E03", "\u516B", "\u4E5D", "\u5341", "\u5341\u4E00", "\u5341\u4E8C"];
+        let monthName = rawMonth.replace(/[\u958F\u95F0\u6708]/g, "");
+        monthNumberMatch && (monthName = monthNames[Math.max(1, Math.min(12, Number(monthNumberMatch[0])))] || monthName);
+        /^[\u6B63\u4E00\u4E8C\u4E09\u56DB\u4E94\u516D\u4E03\u516B\u4E5D\u5341]+$/.test(monthName) || (monthName = monthNames[Number(monthNumberMatch == null ? 0 : monthNumberMatch[0])] || "\u6B63");
+        const dayNumber = Math.max(1, Math.min(30, Number(part("day").replace(/[^\d]/g, "")) || 1)), digits = ["", "\u4E00", "\u4E8C", "\u4E09", "\u56DB", "\u4E94", "\u516D", "\u4E03", "\u516B", "\u4E5D", "\u5341"], dayName = dayNumber <= 10 ? `\u521D${digits[dayNumber]}` : dayNumber < 20 ? `\u5341${digits[dayNumber - 10]}` : dayNumber === 20 ? "\u4E8C\u5341" : dayNumber < 30 ? `\u5EFF${digits[dayNumber - 20]}` : "\u4E09\u5341", lunarText = `${yearName}\u5E74 ${leap ? "\u958F" : ""}${monthName}\u6708 ${dayName}`;
+        const label = row.querySelector("span"), current = [...row.childNodes].filter((node) => node !== label).map((node) => node.textContent || "").join("").trim();
+        current !== lunarText && label && row.replaceChildren(label, document.createTextNode(lunarText));
+      } catch (error) {
+      }
     }, correctTempleNames = () => {
       const names = new Map([
         ["\u9EA5\u5BEE\u65BD\u539D\u93AE\u8056\u5BAE", "\u9EA5\u5BEE\u6A4B\u982D\u93AE\u8056\u5BAE"],
@@ -580,7 +618,7 @@
       } catch (e) {
       }
     }, ensureUi = () => {
-      installNavigation(), installHashNavigation(), installQuickDock(), installMobileQuickViewport(), installPhoneDialing(), installPortalMotion(), installFortuneFeedback(), installReliableVideoControls(), installSinglePageEbook(), ensureDonationPreviewFrames(), correctTempleNames(), correctShimenGallery(), annotateDynamicContent(), normalizeEbook();
+      installNavigation(), installHashNavigation(), installQuickDock(), installMobileQuickViewport(), installPhoneDialing(), installPortalMotion(), installFortuneFeedback(), installReliableVideoControls(), installSinglePageEbook(), ensureDonationPreviewFrames(), normalizeLunarDate(), correctTempleNames(), correctShimenGallery(), annotateDynamicContent(), normalizeEbook();
     }, boot = () => {
       if (ensureUi(), applyDraft(), !document.querySelector(".admin-entry")) {
         const admin = document.createElement("a");

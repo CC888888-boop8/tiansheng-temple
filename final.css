@@ -3,6 +3,13 @@
   overflow: hidden !important;
 }
 
+/* v76：導覽列英文宮名靠近中文宮名，保留原導覽列尺寸 */
+@media (min-width: 701px) {
+  .site-header .brand-copy small {
+    margin-top: 3px !important;
+  }
+}
+
 .result-grid > article > .donation-preview,
 .result-grid > article:nth-child(2) > .donation-preview {
   box-sizing: border-box !important;
