@@ -912,18 +912,44 @@ body.preview-active {
 
 /* v78 — device-independent icons. These shapes do not use emoji or
    operating-system symbol fonts, so iOS, Android, Windows and macOS match. */
-.stable-external-control {
+.stable-external-control,
+.ebook-expand,
+.video-actions button:last-child,
+.social .section-heading > a {
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
   gap: 0.55em !important;
+  font-size: 0 !important;
 }
 
-.stable-external-control::before {
+.stable-external-control::before,
+.ebook-expand::before,
+.video-actions button:last-child::before,
+.social .section-heading > a::before {
   content: attr(data-stable-icon-label);
+  flex: 0 0 auto;
+  font-size: var(--stable-label-size, 16px) !important;
+  line-height: 1.25;
+  pointer-events: none;
 }
 
-.stable-external-control::after {
+.ebook-expand::before {
+  content: "放大閱讀";
+}
+
+.video-actions button:last-child::before {
+  content: "放大觀看";
+}
+
+.social .section-heading > a::before {
+  content: "前往粉絲專頁";
+}
+
+.stable-external-control::after,
+.ebook-expand::after,
+.video-actions button:last-child::after,
+.social .section-heading > a::after {
   content: "";
   flex: 0 0 auto;
   width: 13px;
@@ -937,16 +963,22 @@ body.preview-active {
       currentColor 44% 56%,
       transparent 57%
     ) 50% 50% / 100% 100% no-repeat;
+  pointer-events: none;
 }
 
-.stable-play-control {
+.stable-play-control,
+.video-center-play,
+.video-buttons button:first-child {
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
   gap: 0.45em !important;
+  font-size: 0 !important;
 }
 
-.stable-play-control::before {
+.stable-play-control::before,
+.video-center-play::before,
+.video-buttons button:first-child::before {
   content: "";
   flex: 0 0 auto;
   width: 0;
@@ -954,9 +986,12 @@ body.preview-active {
   border-top: 7px solid transparent;
   border-bottom: 7px solid transparent;
   border-left: 11px solid currentColor;
+  pointer-events: none;
 }
 
-.stable-play-control[aria-label^="暫停"]::before {
+.stable-play-control[aria-label^="暫停"]::before,
+.video-center-play[aria-label^="暫停"]::before,
+.video-buttons button:first-child[aria-label^="暫停"]::before {
   width: 11px;
   height: 14px;
   border: 0;
@@ -965,25 +1000,32 @@ body.preview-active {
     linear-gradient(currentColor, currentColor) 100% 0 / 4px 100% no-repeat;
 }
 
-.video-center-play.stable-play-control::before {
+.video-center-play.stable-play-control::before,
+.video-center-play::before {
   border-top-width: 11px;
   border-bottom-width: 11px;
   border-left-width: 17px;
   margin-left: 3px;
 }
 
-.video-center-play.stable-play-control[aria-label^="暫停"]::before {
+.video-center-play.stable-play-control[aria-label^="暫停"]::before,
+.video-center-play[aria-label^="暫停"]::before {
   width: 15px;
   height: 20px;
   margin-left: 0;
   border: 0;
 }
 
-.stable-play-labeled::after {
+.stable-play-labeled::after,
+.video-buttons button:first-child::after {
   content: attr(aria-label);
+  font-size: var(--stable-play-label-size, 14px) !important;
+  line-height: 1.2;
+  pointer-events: none;
 }
 
-.culture-portals .stable-yinyang-icon {
+.culture-portals .stable-yinyang-icon,
+.culture-portals > a[href="#services"] > i {
   position: relative !important;
   overflow: hidden !important;
   color: transparent !important;
@@ -991,7 +1033,8 @@ body.preview-active {
   background: #f0dbb2 !important;
 }
 
-.culture-portals .stable-yinyang-icon::before {
+.culture-portals .stable-yinyang-icon::before,
+.culture-portals > a[href="#services"] > i::before {
   content: "" !important;
   position: absolute !important;
   top: 50% !important;
@@ -1018,22 +1061,36 @@ body.preview-active {
 }
 
 @media (max-width: 700px) {
-  .culture-portals .stable-yinyang-icon::before {
+  .culture-portals .stable-yinyang-icon::before,
+  .culture-portals > a[href="#services"] > i::before {
     width: 32px !important;
     height: 32px !important;
   }
 }
 
 @media (max-width: 700px) {
-  .stable-external-control::after {
+  .stable-external-control::after,
+  .ebook-expand::after,
+  .video-actions button:last-child::after,
+  .social .section-heading > a::after {
     width: 11px;
     height: 11px;
     background-size: 7px 2px, 2px 7px, 100% 100%;
   }
 
-  .stable-play-control::before {
+  .stable-play-control::before,
+  .video-center-play::before,
+  .video-buttons button:first-child::before {
     border-top-width: 6px;
     border-bottom-width: 6px;
     border-left-width: 10px;
+  }
+
+  .video-actions button:last-child {
+    --stable-label-size: 11px;
+  }
+
+  .video-buttons button:first-child {
+    --stable-play-label-size: 11px;
   }
 }
