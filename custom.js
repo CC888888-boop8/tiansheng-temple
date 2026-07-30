@@ -599,25 +599,6 @@
         observer.unobserve(entry.target);
       }), { threshold: .22 });
       window.requestAnimationFrame(() => window.requestAnimationFrame(() => cards.forEach((card) => observer.observe(card))));
-    }, installStableIcons = () => {
-      const prepareExternalControl = (element, label) => {
-        if (!element) return;
-        element.dataset.stableIconLabel = label;
-        element.classList.add("stable-external-control");
-      };
-      prepareExternalControl(document.querySelector(".ebook-expand"), "\u653E\u5927\u95B1\u8B80");
-      prepareExternalControl(document.querySelector(".social .section-heading > a"), "\u524D\u5F80\u7C89\u7D72\u5C08\u9801");
-      document.querySelectorAll(".video-actions button:nth-child(2)").forEach((button) => {
-        prepareExternalControl(button, "\u653E\u5927\u89C0\u770B");
-      });
-      document.querySelectorAll(".video-center-play,.video-buttons button:first-child").forEach((button) => {
-        button.classList.add("stable-play-control");
-        button.matches(".video-buttons button:first-child") && button.classList.add("stable-play-labeled");
-      });
-      const yinyang = document.querySelector('.culture-portals > a[href="#services"] > i');
-      if (yinyang) {
-        yinyang.classList.add("stable-yinyang-icon");
-      }
     }, applyDraft = () => {
       var _a;
       try {
@@ -637,7 +618,7 @@
       } catch (e) {
       }
     }, ensureUi = () => {
-      installNavigation(), installHashNavigation(), installQuickDock(), installMobileQuickViewport(), installPhoneDialing(), installPortalMotion(), installFortuneFeedback(), installReliableVideoControls(), installSinglePageEbook(), ensureDonationPreviewFrames(), normalizeLunarDate(), correctTempleNames(), correctShimenGallery(), annotateDynamicContent(), normalizeEbook(), installStableIcons();
+      installNavigation(), installHashNavigation(), installQuickDock(), installMobileQuickViewport(), installPhoneDialing(), installPortalMotion(), installFortuneFeedback(), installReliableVideoControls(), installSinglePageEbook(), ensureDonationPreviewFrames(), normalizeLunarDate(), correctTempleNames(), correctShimenGallery(), annotateDynamicContent(), normalizeEbook();
     }, boot = () => {
       if (ensureUi(), applyDraft(), !document.querySelector(".admin-entry")) {
         const admin = document.createElement("a");
@@ -648,7 +629,7 @@
         queued || (queued = !0, requestAnimationFrame(() => {
           queued = !1, ensureUi();
         }));
-      }).observe(document.body, { childList: !0, subtree: !0, attributes: !0, attributeFilter: ["class", "aria-label"] }), window.setTimeout(ensureUi, 350), window.setTimeout(ensureUi, 1200);
+      }).observe(document.body, { childList: !0, subtree: !0, attributes: !0, attributeFilter: ["class"] }), window.setTimeout(ensureUi, 350), window.setTimeout(ensureUi, 1200);
     };
     const startAfterHydration = () => window.setTimeout(boot, 900);
     document.readyState === "complete" ? startAfterHydration() : window.addEventListener("load", startAfterHydration, { once: !0 });
